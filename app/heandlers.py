@@ -8,10 +8,11 @@ import os
 import datetime
 from work_to_subscribers import list_to_text_file, text_file_to_list
 
+from settings import TOKEN
 import app.keyboards as kb
 
 router = Router()
-bot = Bot(token='6702330987:AAFJXigFOLcZG-rXoKwPuGCOnNZ36glf6uc')
+bot = Bot(TOKEN)
 
 search_filter = {}
 
@@ -19,6 +20,12 @@ search_filter = {}
 @router.message(F.text == '/start')
 async def step1_1(message: Message):
     await message.answer('Старт работы бота:', reply_markup=kb.step1)
+
+
+@router.callback_query(lambda callback_query: callback_query.data.startswith('back_to_menu'))
+async def step_1_2(callback: CallbackQuery, bot):
+    await callback.message.answer(f'Выберите группу.')
+    await bot.send_message(chat_id=callback.from_user.id, text='Выберите пункт меню.', reply_markup=kb.step1)
 
 
 @router.callback_query(lambda callback_query: callback_query.data.startswith('schedule'))
@@ -30,13 +37,15 @@ async def step_1_2(callback: CallbackQuery, bot):
 @router.callback_query(lambda callback_query: callback_query.data.startswith('group_sod'))
 async def step_1_2(callback: CallbackQuery, bot):
     await callback.message.answer(f'Выберите группу.')
+    # await bot.send_message(chat_id=callback.from_user.id, text='Выберите группу.', reply_markup=kb.group_sod)
     await bot.send_message(chat_id=callback.from_user.id,
                            text='СОД23-1: http://94.72.18.202:8083/raspisanie/www/cg59.htm \n'
                                 'СОД23-2К: http://94.72.18.202:8083/raspisanie/www/cg60.htm \n'
                                 'СОД21-1: http://94.72.18.202:8083/raspisanie/www/cg61.htm \n'
                                 'СОД21-2К: http://94.72.18.202:8083/raspisanie/www/cg62.htm \n'
                                 'СОД22-1: http://94.72.18.202:8083/raspisanie/www/cg63.htm \n'
-                                'СОД22-2К: http://94.72.18.202:8083/raspisanie/www/cg64.htm')
+                                'СОД22-2К: http://94.72.18.202:8083/raspisanie/www/cg64.htm',
+                           reply_markup=kb.back_to_menu)
 
 
 @router.callback_query(lambda callback_query: callback_query.data.startswith('group_s'))
@@ -59,8 +68,8 @@ async def step_1_2(callback: CallbackQuery, bot):
                                 'С23-1: http://94.72.18.202:8083/raspisanie/www/cg78.htm \n'
                                 'С23-2: http://94.72.18.202:8083/raspisanie/www/cg79.htm \n'
                                 'С23-3К: http://94.72.18.202:8083/raspisanie/www/cg80.htm \n'
-                                'С23УЗ: http://94.72.18.202:8083/raspisanie/www/cg81.htm \n'
-                           )
+                                'С23УЗ: http://94.72.18.202:8083/raspisanie/www/cg81.htm \n',
+                           reply_markup=kb.back_to_menu)
 
 
 @router.callback_query(lambda callback_query: callback_query.data.startswith('group_umd'))
@@ -69,8 +78,8 @@ async def step_1_2(callback: CallbackQuery, bot):
     await bot.send_message(chat_id=callback.from_user.id,
                            text='УМД 21-1: http://94.72.18.202:8083/raspisanie/www/cg82.htm \n'
                                 'УМД 22-1: http://94.72.18.202:8083/raspisanie/www/cg83.htm \n'
-                                'УМД23-1: http://94.72.18.202:8083/raspisanie/www/cg84.htm \n'
-                           )
+                                'УМД23-1: http://94.72.18.202:8083/raspisanie/www/cg84.htm \n',
+                           reply_markup=kb.back_to_menu)
 
 
 @router.callback_query(lambda callback_query: callback_query.data.startswith('group_sa'))
@@ -84,8 +93,9 @@ async def step_1_2(callback: CallbackQuery, bot):
                                 'СА22-1: http://94.72.18.202:8083/raspisanie/www/cg89.htm \n'
                                 'СА22-2: http://94.72.18.202:8083/raspisanie/www/cg90.htm \n'
                                 'СА23-1: http://94.72.18.202:8083/raspisanie/www/cg91.htm \n'
-                                'СА23-2: http://94.72.18.202:8083/raspisanie/www/cg92.htm \n'
-                           )
+                                'СА23-2: http://94.72.18.202:8083/raspisanie/www/cg92.htm \n',
+                           reply_markup=kb.back_to_menu)
+
 
 
 @router.callback_query(lambda callback_query: callback_query.data.startswith('group_is'))
@@ -107,8 +117,8 @@ async def step_1_2(callback: CallbackQuery, bot):
                                 'ИСр 21-2К: http://94.72.18.202:8083/raspisanie/www/cg105.htm \n'
                                 'ИСр 22-1: http://94.72.18.202:8083/raspisanie/www/cg106.htm \n'
                                 'ИСр23-1: http://94.72.18.202:8083/raspisanie/www/cg107.htm \n'
-                                'ИСс 22-1: http://94.72.18.202:8083/raspisanie/www/cg108.htm \n'
-                           )
+                                'ИСс 22-1: http://94.72.18.202:8083/raspisanie/www/cg108.htm \n',
+                           reply_markup=kb.back_to_menu)
 
 
 @router.callback_query(lambda callback_query: callback_query.data.startswith('group_sv'))
@@ -118,8 +128,8 @@ async def step_1_2(callback: CallbackQuery, bot):
                            text='СВ21-1К: http://94.72.18.202:8083/raspisanie/www/cg109.htm \n'
                                 'СВ22-1К: http://94.72.18.202:8083/raspisanie/www/cg110.htm \n'
                                 'СВ23-1: http://94.72.18.202:8083/raspisanie/www/cg111.htm \n'
-                                'СВ23-2К: http://94.72.18.202:8083/raspisanie/www/cg112.htm \n'
-                           )
+                                'СВ23-2К: http://94.72.18.202:8083/raspisanie/www/cg112.htm \n',
+                           reply_markup=kb.back_to_menu)
 
 
 @router.callback_query(lambda callback_query: callback_query.data.startswith('group_m'))
@@ -129,8 +139,15 @@ async def step_1_2(callback: CallbackQuery, bot):
                            text='М21-1: http://94.72.18.202:8083/raspisanie/www/cg113.htm \n'
                                 'М21-2К: http://94.72.18.202:8083/raspisanie/www/cg114.htm \n'
                                 'М22-1: http://94.72.18.202:8083/raspisanie/www/cg115.htm \n'
-                                'М23-1: http://94.72.18.202:8083/raspisanie/www/cg116.htm \n'
-                           )
+                                'М23-1: http://94.72.18.202:8083/raspisanie/www/cg116.htm \n',
+                           reply_markup=kb.back_to_menu)
+
+
+@router.callback_query(lambda callback_query: callback_query.data.startswith('mailing'))
+async def step_1_2(callback: CallbackQuery, bot):
+    await bot.send_message(chat_id=callback.from_user.id, text='Для того, чтобы получать новости КИТиС, подпишитесь на'
+                                                               ' группу: https://t.me/+5cAxaT8wUPxmNDcy',
+                           reply_markup=kb.back_to_menu)
 
 
 # @router.callback_query(lambda callback_query: callback_query.data.startswith('mailing'))
@@ -165,7 +182,7 @@ class Quantity(StatesGroup):
 async def calculation_rating(message: Message, state: FSMContext):
     await state.set_state(Quantity.five)
     await message.answer("Введите количество 5:")
-    await message.answer("Введите количество 5:")
+    await bot.send_message(chat_id=message.from_user.id, text="Введите количество 5:")
 
 
 @router.message(Quantity.five)
@@ -196,5 +213,28 @@ async def quantity_five(message: Message, state: FSMContext):
     data = await state.get_data()
     five, fore, three, two = int(data['five']), int(data['fore']), int(data['three']), int(data['two'])
     average_rating = ((five * 5) + (fore * 4) + (three * 3) + (two * 2)) / (five + fore + three + two)
-    print(average_rating)
+    await message.answer(f"Количество оценок: 5-{five}, 4-{fore}, 3-{three}, 2-{two}\nСредний балл - {average_rating}",
+                           reply_markup=kb.back_to_menu)
+
+
+class Question(StatesGroup):
+    qwery = State()
+
+
+@router.callback_query(lambda callback_query: callback_query.data.startswith('faq'))
+async def calculation_rating(message: Message, state: FSMContext):
+    await state.set_state(Question.qwery)
+    await bot.send_message(chat_id=message.from_user.id, text="Введите ваш вопрос, ответ на него поступит вам в ЛС.")
+
+
+@router.message(Question.qwery)
+async def quantity_five(message: Message, state: FSMContext):
+    await state.update_data(qwery=message.text)
+    await message.answer("Ваша заявка будет рассмотрена.")
+    await bot.send_message(chat_id=message.from_user.id, text="Введите ваш вопрос, ответ на него поступит вам в ЛС.")
+    await bot.send_message(chat_id=900583523, text=f"От пользователя {f'@{message.from_user.username}'} "
+                                                   f"поступил вопрос: \n{message.text}",
+                           reply_markup=kb.back_to_menu)
+    # await bot.send_message(chat_id=674796107, text=f"От пользователя {f'@{message.from_user.username}'} "
+    #                                                f"поступил вопрос: \n{message.text}")
 

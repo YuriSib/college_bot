@@ -10,7 +10,7 @@ from settings import TOKEN
 
 def send_message_news_or_announce(text, link):
     bot = telebot.TeleBot(TOKEN)
-    bot.send_message(674796107, f'{text}\n{link}')
+    bot.send_message(-1002115326292, f'{text}\n{link}')
 
 
 def monitoring():
