@@ -97,7 +97,6 @@ async def step_1_2(callback: CallbackQuery, bot):
                            reply_markup=kb.back_to_menu)
 
 
-
 @router.callback_query(lambda callback_query: callback_query.data.startswith('group_is'))
 async def step_1_2(callback: CallbackQuery, bot):
     await callback.message.answer(f'Выберите группу.')
@@ -211,10 +210,15 @@ async def quantity_five(message: Message, state: FSMContext):
     await state.update_data(two=message.text)
 
     data = await state.get_data()
-    five, fore, three, two = int(data['five']), int(data['fore']), int(data['three']), int(data['two'])
+    try:
+        five, fore, three, two = int(data['five']), int(data['fore']), int(data['three']), int(data['two'])
+    except ValueError:
+        await message.answer(f"Введено некорректное значение, попробуйте снова!")
+        await state.set_state(Quantity.five)
+        await bot.send_message(chat_id=message.from_user.id, text="Введите количество 5:")
     average_rating = ((five * 5) + (fore * 4) + (three * 3) + (two * 2)) / (five + fore + three + two)
-    await message.answer(f"Количество оценок: 5-{five}, 4-{fore}, 3-{three}, 2-{two}\nСредний балл - {average_rating}",
-                           reply_markup=kb.back_to_menu)
+    await message.answer(f"Количество оценок: 5-{five}, 4-{fore}, 3-{three}, 2-{two}\nСредний балл - "
+                         f"{average_rating}", reply_markup=kb.back_to_menu)
 
 
 class Question(StatesGroup):
